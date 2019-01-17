@@ -14,3 +14,7 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::post('folowers-link', 'FollowersController@getFollowersFromLink');
+Route::post('folowers-name', 'FollowersController@getFollowersFromName');
+
