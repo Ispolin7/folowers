@@ -11,10 +11,8 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'FollowersController@update');
 
-Route::post('folowers-link', 'FollowersController@getFollowersFromLink');
-Route::post('folowers-name', 'FollowersController@getFollowersFromName');
+//Route::post('followers-link', 'FollowersController@getFollowersFromLink');
+//Route::post('followers-name', 'FollowersController@getFollowersFromName');
 
