@@ -14,7 +14,7 @@ class Search
      * @return array
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public static function findUsers($username)
+    public static function findInstagramUsers($username)
     {
         $client = new Client();
         $response = $client->request('GET', env('INSTAGRAM_SEARCH_LINK'), [
@@ -47,5 +47,31 @@ class Search
         return [
             'found' => false
         ];
+    }
+
+    /**
+     * Get followers count
+     *
+     * @param $username
+     * @return mixed
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public static function getYoutubeChanelInformation($username)
+    {
+        $client = new Client();
+        $response = $client->request('GET', env('YOUTUBE_API_LINK'), [
+            'query' => [
+                'part' => 'statistics',
+                'id' => $username,
+                'key' => env('YOUTUBE_API_KEY')
+            ]
+        ]);
+        $body = $response->getBody();
+        $result = json_decode($body);
+        if($response->getStatusCode() == 200 || $result) {
+            return $result->items[0]->statistics->subscriberCount;
+        }
+        return null;
+
     }
 }

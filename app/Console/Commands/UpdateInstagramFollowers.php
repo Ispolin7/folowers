@@ -2,26 +2,27 @@
 
 namespace App\Console\Commands;
 
-use App\Http\Models\Follower;
+use App\Http\Controllers\FollowersController;
+use App\Http\Models\InstagramFollower;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Http\Request;
 
-class CallRoute extends Command
+class UpdateInstagramFollowers extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'update:followers';
+    protected $signature = 'followers-update:instagram';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'php artsian update:followers';
+    protected $description = 'Update istagram followers in DB';
 
     /**
      * Create a new command instance.
@@ -37,19 +38,11 @@ class CallRoute extends Command
      * Execute the console command.
      *
      * @return mixed
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function handle()
     {
-        $needUpdate = Follower::whereDate('updated_at', '<', Carbon::today()->subDays(3)->toDateString())
-            ->orWhere('updated_at', null)
-            ->limit(5)
-            ->get();
-        if ($needUpdate) {
-            foreach ($needUpdate as $item) {
-                /** @var Follower $item */
-                $item->checkUsername()->getInstagramInformation()->touch();
-            }
-        }
+        (new FollowersController())->updateInstagramFollowers();
     }
 
 }

@@ -4,27 +4,48 @@ namespace App\Http\Controllers;
 
 use App\Http\Helpers\Parser;
 use App\Http\Helpers\Search;
-use App\Http\Models\Follower;
+use App\Http\Models\InstagramFollower;
+use App\Http\Models\YoutubeFollowers;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class FollowersController extends Controller
 {
     /**
-     * Update information in followers DB
+     * Update information in instagram followers DB
      *
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function update()
+    public function updateInstagramFollowers()
     {
-        $needUpdate = Follower::whereDate('updated_at', '<', Carbon::today()->subDays(3)->toDateString())
+        $needUpdate = InstagramFollower::whereDate('updated_at', '<', Carbon::today()->subDays(3)->toDateString())
             ->orWhere('updated_at', null)
+            ->limit(env('UPDATE_LIMIT'))
             ->get();
         if ($needUpdate) {
             foreach ($needUpdate as $item) {
-                /** @var Follower $item */
-                $item->checkUsername()->getInstagramInformation()->touch();
+                /** @var InstagramFollower $item */
+                $item->checkUsername()->getInstagramFollowers()->touch();
             }
         }
-        return view('welcome');
+    }
+
+    /**
+     * Update information in youtube followers DB
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function updateYoutubeFollowers()
+    {
+        $needUpdate = YoutubeFollowers::whereDate('updated_at', '<', Carbon::today()->subDays(3)->toDateString())
+            ->orWhere('updated_at', null)
+            ->limit(env('UPDATE_LIMIT'))
+            ->get();
+        if ($needUpdate) {
+            foreach ($needUpdate as $item) {
+                /** @var YoutubeFollowers $item */
+                $item->checkUsername()->getYoutubeInformation()->touch();
+            }
+        }
     }
 }
